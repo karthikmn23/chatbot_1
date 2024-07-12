@@ -3,16 +3,16 @@ import os
 import streamlit as st
 from streamlit_chat import message
 
-# Set the page configuration
 st.set_page_config(page_title="Custom ChatGPT")
 
-# Add custom CSS for background image
-page_bg_img = '''
+# Add custom CSS for the background image
+background_image_url = "https://your-image-url.com/image.jpg"  # Replace this with the URL of your background image
+page_bg_img = f'''
 <style>
-.stApp {
-    background-image: url("https://your-image-url.com/background.jpg");
-    background-size: cover;
-}
+body {{
+background-image: url("{background_image_url}");
+background-size: cover;
+}}
 </style>
 '''
 
@@ -26,7 +26,7 @@ openai.api_version = "2023-03-15-preview"
 openai.api_base = os.getenv('OPENAI_API_BASE')
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Initialize session state variables
+# Initialise session state variables
 if 'generated' not in st.session_state:
     st.session_state['generated'] = []
 if 'past' not in st.session_state:
@@ -52,20 +52,19 @@ if model_name == "GPT-3.5":
 else:
     model = "gpt-4"
 
-# Reset everything if clear_button is pressed
+# Reset everything
 if clear_button:
     st.session_state['generated'] = []
     st.session_state['past'] = []
     st.session_state['messages'] = [
         {"role": "system", "content": "You are a helpful assistant."}
     ]
-    st.session_state['number_tokens'] = []
     st.session_state['model_name'] = []
     st.session_state['total_tokens'] = []
 
 # Generate a response
 def generate_response(prompt):
-    main_prompt = f'''You are a custom AI assistant for our company to answer employee's questions. Make sure you ask the employee's name and role title before you answer any question. Here is the chat history including the latest question: {prompt}.'''
+    main_prompt = f'''You are a custom AI assistant for our company to answer employee's questions. Make sure you ask the employee's name and role title before you answer any questions. Here is the chat history including the latest question: {prompt}.'''
     st.session_state['messages'].append({"role": "user", "content": main_prompt})
     completion = openai.ChatCompletion.create(
         engine=model,
